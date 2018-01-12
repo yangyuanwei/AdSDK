@@ -70,6 +70,12 @@
 }
 
 - (void)back{
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:NO completion:^{
+        //退出
+        if (self.backBlock) {
+            self.backBlock();
+        }
+    }];
 }
 @end

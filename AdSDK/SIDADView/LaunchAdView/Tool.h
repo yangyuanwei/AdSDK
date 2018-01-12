@@ -25,8 +25,8 @@
 
 
 #pragma mark 初始化广告位端口
-#define ADHost  @"http://192.168.19.15:8080/advertisement/api/advertisingbits/initAdvertisingbit"   //内网测试环境
 //#define ADHost  @"http://192.168.16.194:8080/advertisement/api/advertisingbits/initAdvertisingbit" //开发环境
+#define ADHost  @"http://192.168.19.15:8080/advertisement/api/advertisingbits/initAdvertisingbit"   //内网测试环境
 //#define ADHost  @"http://test.stblapp.com/advertisement/api/advertisingbits/initAdvertisingbit" //外网体验
 
 
@@ -36,9 +36,9 @@
 
 
 #pragma mark 启动页广告请求
-#define OpenAdHost @"http://192.168.19.15:8080/api/advertisingbits/getAdvertisingbit" //内网测试环境
-//#define OpenAdHost @"http://192.168.16.194:8080/api/advertisingbits/getAdvertisingbit" //开发环境
-//#define OpenAdHost @"http://test.stblapp.com/api/advertisingbits/getAdvertisingbit"  //外网体验
+//#define OpenAdHost @"http://192.168.16.194:8080/advertisement/api/advertisingbits/getAdvertisingbit" //开发环境
+#define OpenAdHost @"http://192.168.19.15:8080/advertisement/api/advertisingbits/getAdvertisingbit" //内网测试环境
+//#define OpenAdHost @"http://test.stblapp.com/advertisement/api/advertisingbits/getAdvertisingbitt"  //外网体验
 
 
 

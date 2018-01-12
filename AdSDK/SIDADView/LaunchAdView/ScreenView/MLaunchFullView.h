@@ -14,8 +14,8 @@
 /**
  * 退出开屏广告
  */
-@property (nonatomic, copy) void(^OpenAd_close_Block)();
-@property (nonatomic, copy) void(^OpenAd_open_Block)();
+@property (nonatomic, copy) void(^OpenAd_close_Block)(void);
+@property (nonatomic, copy) void(^OpenAd_open_Block)(void);
 
 /**
  *自定义广告尺寸，默认为全屏

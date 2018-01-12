@@ -74,6 +74,7 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
+      self.closeBtn.hidden = YES;
     self.imageV.frame = self.frame;
     if (iPhoneX) {
         self.closeBtn.frame = CGRectMake(VIEW_BX(self)-90, 35, 80, 40);
@@ -113,15 +114,18 @@
 }
 
 - (void)imageBtn{
-    
-    if (self.OpenAd_open_Block) {
-        self.OpenAd_open_Block();
+    if (self.imageV.image) {
+        [self pauseTimer];
+        if (self.OpenAd_open_Block) {
+            
+            self.OpenAd_open_Block();
+        }
     }
 }
 
 - (void)startWithTime:(NSInteger)timeLine{
     
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     //倒计时时间
     __block NSInteger timeOut = timeLine;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -137,11 +141,16 @@
                 
                 //退出
                 [self closeButton];
-                //移初广告
+              
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.closeBtn setTitle:[NSString stringWithFormat:@"%@ %ld",self.btnTitle,(long)timeOut] forState:UIControlStateNormal];
+                if (self.imageV.image) {
+                    self.closeBtn.hidden = NO;
+                    [self.closeBtn setTitle:[NSString stringWithFormat:@"%@ %ld",self.btnTitle,(long)timeOut] forState:UIControlStateNormal];
+                }else{
+                    self.closeBtn.hidden = YES;
+                }
                 
             });
             timeOut--;

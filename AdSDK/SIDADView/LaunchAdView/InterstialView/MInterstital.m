@@ -128,8 +128,8 @@ typedef NS_ENUM(NSUInteger,MPushAdSever_ClickEffect) {
         //点击了网页
         
         NSDictionary *dict = @{
-                               @"adId":self.advertisingId,
-                               @"appId":self.appid,
+                               @"advertisingId":self.model.adId,
+                               @"appCode":self.appid,
                                @"deviceId":[[UIDevice currentDevice].identifierForVendor UUIDString]
                                };
         

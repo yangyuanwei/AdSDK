@@ -89,10 +89,10 @@ static NSString *const adUrl = @"adUrl";
 
     self.fullView.OpenAd_open_Block = ^{
         if (WeakSelf.fullView.imageV.image) {//有图片
-            
+    //点击了网页
             NSDictionary *dict = @{
-                                   @"adId":WeakSelf.advertisingId,
-                                   @"appId":WeakSelf.appid,
+                                   @"advertisingId":WeakSelf.model.adId,
+                                   @"appCode":self.appid,
                                    @"deviceId":[[UIDevice currentDevice].identifierForVendor UUIDString]
                                    };
             
@@ -113,6 +113,14 @@ static NSString *const adUrl = @"adUrl";
             }];
             
             WYWebController *webVC = [WYWebController new];
+            webVC.backBlock = ^{
+                //退出网页
+                if (WeakSelf.closeAdBlock) {
+                    
+                    WeakSelf.closeAdBlock();
+                    
+                }
+            };
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webVC];
             webVC.url = WeakSelf.model.clickActContent.webUrl;
             [[WeakSelf getCurrentVC] presentViewController:nav animated:YES completion:nil];
@@ -164,89 +172,23 @@ static NSString *const adUrl = @"adUrl";
         }
         MDataModel *model = dataModel.result;
         self.model = model;
-        //         [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:model.formContent.img]];
-        //         [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:@"http://120.76.53.52/advertisement/api/ad/advertising/advertising/filePicUrl?name=20171225162137.png"]];
-        
-//        model.formContent.img = @"https://ss3.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=2d6e81b5fd36afc3110c39658319eb85/908fa0ec08fa513d08b6a0ab376d55fbb2fbd9a3.jpg";
         [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:model.formContent.img] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            [self.fullView startWithTime:self.timerInValue];
+            
+            if (self.fullView.imageV.image) {
+                NSLog(@"启动页图片下载成功");
+                [self.fullView startWithTime:self.timerInValue];
+            }else{
+                NSLog(@"启动页图片下载下载失败");
+                [self.fullView startWithTime:0];
+            }
             
         }];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        NSLog(@"请求启动广告错误：%@",error);
     }];
 }
 
-- (void)loadMyAd{
-    
-    // 1.判断沙盒中是否存在广告图片，如果存在，直接显示
-    NSString *filePath = [Tool getFilePathWithImageName:[kUserDefaults valueForKey:adImageName]];
-    
-    BOOL isExist = [Tool isFileExistWithFilePath:filePath];
-    if (isExist) { // 图片存在
-        
-        //将图片的路径传出去，展示图片
-        self.fullView.filePath = filePath;
-        
-    }else{ //图片不存在
-        
-        //请求广告
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        manager.requestSerializer = [AFJSONRequestSerializer serializer];
-        manager.responseSerializer = [AFJSONResponseSerializer serializer];
-        
-        NSDictionary *dict = @{
-                               @"appId":self.appid,
-                               @"advertisingbitId":self.advertisingId
-                               };
-        [manager POST:OpenAdHost parameters:dict progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            MResultData *dataModel = [MResultData mj_objectWithKeyValues:responseObject];
-            
-            switch ([dataModel.code integerValue]) {
-                case 700:
-                    NSLog(@"启动页请求成功无内容");
-                    break;
-                    
-                case 200:
-                    NSLog(@"启动页请求成功并相应内容");
-                    break;
-                    
-                case 500:
-                    NSLog(@"启动页请求系统异常");
-                    break;
-                    
-                case 206:
-                    NSLog(@"启动页请求参数不正确");
-                    break;
-                    
-                default:
-                    break;
-            }
-            if ([dataModel.code isEqualToString:@"700"]) {//成功无内容
-                NSLog(@"成功无内容");
-            }
-            MDataModel *model = dataModel.result;
-            self.model = model;
-            //         [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:model.formContent.img]];
-            //         [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:@"http://120.76.53.52/advertisement/api/ad/advertising/advertising/filePicUrl?name=20171225162137.png"]];
-            
-
-//            [Tool getAdvertisingImage:self.model.formContent.img];
-//            [self.fullView startWithTime:self.timerInValue];
-            model.formContent.img = @"http://120.76.53.52/advertisement/api/ad/advertising/advertising/filePicUrl?name=2;0171225162137.png";
-            [self.fullView.imageV sd_setImageWithURL:[NSURL URLWithString:model.formContent.img] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-                [self.fullView startWithTime:self.timerInValue];
-                
-            }];
-            
-            
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
-        }];
-        
-    }
-}
 
 - (void)showFromViewController:(UIViewController *)viewController{
 //    self.fullView.frame = viewController.view.frame;

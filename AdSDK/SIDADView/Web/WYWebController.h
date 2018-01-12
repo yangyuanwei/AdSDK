@@ -11,5 +11,8 @@
 @interface WYWebController : UIViewController
 
 @property (nonatomic, copy) NSString *url;
-
+/**
+ * 返回按钮
+ */
+@property (nonatomic, copy) void(^backBlock)();
 @end
